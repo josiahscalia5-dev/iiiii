@@ -41,6 +41,8 @@ final class Room {
     GuardDef[] guards = new GuardDef[0];
     /** guard height in world px at depth 1 */
     float guardH;
+    /** guard vision range, in boy heights (floor space) */
+    float visionRange = 1.25f;
     /** flashlight / vision colour (rgb) */
     int beamColor;
     Heist heist;

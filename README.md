@@ -3,54 +3,55 @@
 Cute, colorful cartoon museum **stealth/heist** game: a masked boy sneaks through museum rooms, steals diamonds, avoids guards and moves room to room. Portrait, package `com.treasurerun.game`, **native Java with a custom Canvas engine** (no Unity/Godot, no Gradle).
 
 ## Where things stand (2026-09-26)
-- **Baseline:** `reference/TreasureRun-v0_4-rooms.apk` = v0.4 "rooms foundation", the last build from the previous Claude account. Install it to see exact v0.4 behaviour.
-- **This repo:** full source recovered from that APK (jadx), fixed so it compiles, a working no-Gradle build pipeline, and v0.5 art work in progress.
-- **No v0.5 gameplay code has been written yet.** Next session starts at "Next steps" below.
+- **v0.5 is built and waiting for the owner to test**: `releases/TreasureRun-v0.5.apk` (versionCode 5). Everything in the v0.5 scope below is implemented. **Do nothing else until the owner has played it.**
+- Baseline for comparison: `reference/TreasureRun-v0_4-rooms.apk` (v0.4 "rooms foundation", the last build from the previous account).
+- **Install note:** builds from this repo are signed with the committed debug key (`keystore/`), v0.4 was not. **Uninstall v0.4 once** before installing v0.5; later builds from this repo update in place.
 
-## Known issues (read first)
-1. `GameView.onTouchEvent` could not be decompiled and is **stubbed** (`return true`). Builds from this source show v0.4 but the joystick does nothing. That's acceptable only because v0.5 replaces the joystick controls entirely.
-2. **Signing:** `scripts/build.sh` signs with `keystore/treasurerun-debug.jks` (alias `treasurerun`, store/key password `treasurerun`). This debug key is committed on purpose so builds made from any account install as updates over each other. v0.4 was signed with a different key that isn't available, so **uninstall v0.4 once** before installing the first build from this repo.
-3. `art/pipeline/rooms2.py` outputs (Room 2 guards/beams painted out, diamond removed from Room 1 case, guard side sprite) were produced at the end of a session and **have not been visually reviewed**. Check `art/wip/room2_final.png`, `r2_g1_clean.png`, `r2_g2_clean.png`, `case_empty.png`, `parts/guard_side_full.png` first.
-4. `art/wip/parts/boy_tq_body.png` has a visible vertical seam where the arm was cut (`torso_x` in `art/pipeline/boy_cuts.py`); needs a fix.
+## v0.5 scope (agreed with the owner) — status
+1. **Natural walk** ✅ — painted body (head, beanie, backpack) per view + painted arm swung about the shoulder, over procedural "3D-lite" legs: IK knees, heel strike / toe-off roll, hip bob and sway, lean, counter-swinging arm, phase driven by distance walked (planted feet don't slide), eased start/stop, smoothed heading choosing back / three-quarter / front-sneak views (mirrored) with a quick turn squash. Sprint = longer, bouncier stride. Jeans + red sneakers colour-matched to the painting; the shoe tread shows when a foot lifts away from the camera.
+2. **Real guards** ✅ — painted guards/beams removed from the backgrounds and re-added live with the same art: patrol → "?" suspicious (meter ring) → "!" alert (shocked front face) → chase (A* on the walk mask) → loses the boy behind obstacles → searches the last-seen spot → walks back to the route. Flashlight vision cone in floor space, raycast so it stops at obstacles; line of sight blocked by anything not walkable. A guard also senses a boy right next to him, and hears a sprinting one nearby. **Caught = "CAUGHT!", iris out, room restarts** (coins/gems of that room reset). Room 1's guard patrols **across the middle of the corridor**; Room 2 has one guard on each route around the crown.
+3. **Diamond** ✅ — Room 1's case diamond is a live prize: sparkles + tap ring when close, **tap it (or the hand button)** → the boy walks over if needed, reaches up, the diamond arcs up into the HUD gem counter, the case is left empty (patch + empty occluder). **Room 1's exit stays shut until it's stolen** (walking up to it shows "Steal the diamond first!"). Room 2's floating gems are walk-over pickups.
+4. **Controls** ✅ — blue joystick removed. **Hold anywhere → the boy walks toward your finger** (routes around obstacles when the straight line is blocked); **quick tap → walks to that spot** (A* path, tap marker); release → eases to a stop. Pause, sprint (hold) and hand buttons kept. A one-time hint explains this at the start of the first run.
+5. **Free movement** ✅ — free 2D inside the walk mask with sliding collision, plus a small "flow around" when pushing into a corner.
+6. **Room transition** ✅ — walk through the doorway (camera push-in + gold-rimmed iris), arrive walking in at the next room's bottom entrance with a small name banner. The next room is decoded in the background as soon as a room starts, so the doorway never waits.
+- Characters, museum art, colours, HUD and diamond style preserved. No shops, skins, rewards, menus or extra levels were added.
 
 ## Build
 ```bash
 tools/setup_tools.sh          # JDK 21, android.jar (API 35), dx, apktool, uber-apk-signer  (add --art for LaMa + U2Net models)
 scripts/build.sh 5 "0.5"      # -> build/TreasureRun.apk  (javac -source 8 -> dx --min-sdk 21 -> apktool b -> zipalign + v1/v2/v3 sign)
 ```
-All tools come from GitHub-hosted URLs (the claude.ai sandbox blocks Google Maven / dl.google.com, so d8 is unavailable; `dx` from the dex2jar release is used instead).
+All tools come from GitHub-hosted URLs (the sandbox blocks Google Maven / dl.google.com, so d8 is unavailable; `dx` from the dex2jar release is used instead). Because of `dx`, **no lambdas / method references in `app/java`** (min SDK 21, no desugaring).
+
+## Desktop render harness (visual QA without an emulator)
+`harness/shim/android/graphics/` implements the android.graphics subset on Java2D, so the real `Game` runs on the desktop JVM:
+```bash
+scripts/harness.sh Sim <scenario>     # frames + log.txt in build/harness/<scenario>/
+scripts/harness.sh RigSheet           # boy rig contact sheet (views x walk phases)
+scripts/harness.sh SpawnCheck         # standing at each spawn must never raise suspicion
+scripts/harness.sh Screens2           # HUD/camera on 16:9, 20:9 and tablet screens
+```
+Scenarios (`harness/src/.../Scenarios.java`): `intro`, `walk`, `heist`, `guard`, `caught`, `search`, `exit`, `room2`, `walkviews`, `full` (whole game by taps, guards removed — must end with `finished`).
 
 ## Layout
 | Path | What |
 |---|---|
-| `app/java/com/treasurerun/game/` | Game source. `GameView` = gameplay (camera, movement, pickups, exit, HUD); `RoomData`/`Room`/`Occ` = room definitions; `MainActivity` = screens + asset cache; `ScreenView`/`FullBleed`/`LayoutData` = menus |
-| `app/assets/` | **Original v0.4 assets** (HUD, menu layers, `rooms/` backgrounds, occluders, walk masks `roomN_walk.png` at 1/4 res, boy poses) |
+| `app/java/com/treasurerun/game/` | `Game` = all gameplay (phases, controls, camera, pickups, heist, HUD, transitions; android.graphics only) · `Boy` = movement state + walk rig · `Guard` = guard AI + drawing · `Nav` = walk mask, clearance, LOS, vision rays, A* · `Room`/`RoomData`/`Occ` = room definitions (guards, heist) · `GameView` = thin Android view (frames, multi-touch, insets) · `MainActivity` = screens + asset cache · `ScreenView`/`FullBleed`/`LayoutData` = menus |
+| `app/assets/` | Game assets. `rooms/` holds the **cleaned** v0.5 backgrounds/occluders (guards and beams painted out), `boy_*_body/arm.png`, `guard_side/front.png`, `room1_case_empty.png`, walk masks `roomN_walk.png` (1/4 res) |
 | `app/apktool/` | Decoded manifest + resources (apktool 3.0.3); version is set by `scripts/build.sh` |
-| `art/pipeline/` | Python art scripts: `room1_clean.py` (Room 1 guard+beam removal, LaMa inpainting), `rooms2.py` (Room 2 cleanup, diamond-out-of-case, guard sprite), `build_boy.py`+`boy_cuts.py` (boy body/arm parts), `inpaint.py` (LaMa ONNX), `matte.py` (U2Net cutouts), `seg_guard.py` (old GrabCut attempt, superseded) |
-| `art/wip/` | All work-in-progress images incl. `parts/` (boy_*_body/arm, boy_meta.json, guard sprites, cleaned diamond case) and full-res room composites |
-| `harness/shim/android/graphics/` | Java2D implementation of the android.graphics subset, so game rendering code can run on a desktop JVM and dump PNG frames for visual QA (no emulator available) |
-| `keystore/` | Shared debug signing key |
-| `reference/` | v0.4 APK |
+| `art/pipeline/` | Python art scripts, all reading the **original v0.4 assets from the reference APK**: `clean_rooms.py` (guard/beam removal, empty case, occluder re-cut), `walk_masks.py` (reopen the floor where painted guards stood), `guards.py` (guard sprites), `build_boy.py`+`boy_cuts.py` (boy body/arm parts), `inpaint.py` (LaMa ONNX, 1:1 tiled or resampled), `matte.py` (U2Net) |
+| `art/wip/` | Review sheets (`review_*.png`: before/after of each cleanup), guard matte checks, older WIP images |
+| `harness/` | Java2D android.graphics shim + desktop harness (`Sim`, `Scenarios`, `RigSheet`, …) |
+| `keystore/` | Shared debug signing key (alias `treasurerun`, passwords `treasurerun`) |
+| `reference/` | v0.4 APK (source of all original art) |
+| `releases/` | APKs handed to the owner |
 
-## v0.5 scope (agreed with the owner — do nothing else until they test)
-1. **Natural walk:** real walk cycle — alternating legs with heel-toe, counter-swinging arms, hip bob, lean, smooth start/stop/turn. Keep the existing painted boy (head, beanie, backpack, arm). Plan: procedural 3D-lite legs + shoes in matching jeans/red sneakers, painted body, painted arm rotated about the shoulder, phase driven by distance (no foot sliding), smoothed heading drives view choice (back / three-quarter / front-sneak, mirrored).
-2. **Real guards:** painted guards + beams removed from backgrounds and re-added as live characters (same art): patrol → "?" suspicious → "!" alert (shocked front face) → chase → lose sight behind obstacles → search → return; can catch the boy. Vision cone in floor space, line of sight blocked by non-walkable cells, A* on the walk mask. **Caught = room restarts.** Room 1 guard patrols **across the middle of the corridor** (player must sneak past).
-3. **Diamond:** Room 1 case diamond becomes a real object: sparkles when close, tap it (or hand button) → boy reaches, diamond flies to the HUD counter, case left empty. **Room 1 exit stays shut until it's stolen.** Room 2 floating gems stay walk-over pickups.
-4. **Controls:** remove the blue joystick. **Hold anywhere → boy walks toward your finger** (left of him = left, right = right, above = forward); **quick tap → walks to that spot**; release → eases to a stop. Keep pause, sprint and hand buttons. No new joystick/d-pad.
-5. **Free movement** through the room (already free 2D inside the walk mask; keep sliding collision).
-6. **Room transition:** walk through the doorway (camera push + iris) and arrive walking in at Room 2's bottom entrance with a small name banner, instead of the black title card. Preload the next room.
-- Preserve characters, museum art, colors, HUD, diamond style. No shops, skins, rewards, menus or extra levels.
-- **Then STOP** and give the owner the APK to test on their phone.
+## Notes / known limitations
+- Tested only through the desktop harness (no emulator/device in this environment): gameplay logic, rendering and every scenario above are verified there; on-device feel (speeds, touch sizes, performance) is what the owner test is for.
+- The Room 2 beam-2 area (right of the crown, on the carpet) is a rebuilt, slightly darker patch of carpet — the painted beam had saturated the red channel. Room 1 has some pre-existing soft blotches on the carpet from v0.4's own coin removal.
+- Guards only have side and front art (no back view); a guard walking away uses the side sprite.
+- `GameView.onTouchEvent` from v0.4 could not be decompiled; v0.5 replaces the whole input path, so nothing of it is needed any more.
 
-## Findings from the v0.4 inspection
-- Boy = 3 static images (`boy_back/tq/front.png`) frozen mid-stride; the old "walk" just bobs/tilts/squashes the whole image.
-- All 3 guards (Room 1 ×1, Room 2 ×2) are painted into the backgrounds with their beams; `*_occ_guard*.png` are layering cutouts only; no guard logic existed.
-- Room 1 diamond is painted inside the glass case; Room 1 has 6 coins, 0 gems; Room 2 has 6 walk-over gems.
-- Perspective model: `depth(y) = (y-horizon)/(yRef-horizon)` scales size and speed; vertical speed uses `vFactor * depth^vPow`.
-- Old transition: fade out → black title card → fade in.
-
-## Next steps (in order)
-1. Review/fix the unreviewed `rooms2.py` outputs and the TQ seam; write cleaned backgrounds/occluders into `app/assets/rooms/` (keep originals recoverable from `reference/`).
-2. Move gameplay out of `GameView` (a View) into a `Game` class that uses only android.graphics, so it runs in the harness.
-3. Implement walk rig, guards, diamond steal, touch controls, transition; QA with harness renders.
-4. `scripts/build.sh 5 "0.5"`, hand APK to owner, stop.
+## Next steps
+1. Owner installs `releases/TreasureRun-v0.5.apk` (uninstall v0.4 first) and plays both rooms.
+2. Collect feedback (walk feel, guard difficulty, control feel, speeds) and tune — the main knobs are in `RoomData` (guard routes/pauses, `visionRange`, `guardH`), `Guard` (speeds, suspicion rates) and `Boy.RIGS` (stride, lift, leg sizes).

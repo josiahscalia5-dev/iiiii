@@ -96,6 +96,8 @@ final class Boy {
     /** reaching up for a prize, 0..1 */
     float reach;
     float time;
+    /** startled hop (0..1), e.g. when caught */
+    float hop;
     /** forced facing (e.g. while stealing): -999 = none */
     float faceLock = -999;
 
@@ -104,7 +106,7 @@ final class Boy {
     private final Paint bmp = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final Path path = new Path();
     private final Matrix mtx = new Matrix();
-    private final float[] p3 = new float[3];
+    private final android.graphics.RectF shadow = new android.graphics.RectF();
 
     void place(float x, float y, float headingRad) {
         this.x = x;
@@ -205,7 +207,8 @@ final class Boy {
         float sh = sw * (room.vPow > 1.5f ? 0.22f : 0.3f);
         fill.setShader(null);
         fill.setColor(Color.argb(95, 20, 5, 20));
-        c.drawOval(new android.graphics.RectF(x - sw / 2, y - sh / 2, x + sw / 2, y + sh / 2), fill);
+        shadow.set(x - sw / 2, y - sh / 2, x + sw / 2, y + sh / 2);
+        c.drawOval(shadow, fill);
 
         boolean old = turnT < 0.5f;
         int v = old ? prevView : view;
@@ -217,7 +220,7 @@ final class Boy {
         float s = depth * room.boyH * r.crouch / r.spriteH;
 
         c.save();
-        c.translate(x, y);
+        c.translate(x, y - hop * room.boyH * depth * 0.12f);
         c.scale((m ? -1 : 1) * squash * s, s);
         drawRig(c, r, body, r.arm == null ? null : host.bitmap(r.arm));
         c.restore();

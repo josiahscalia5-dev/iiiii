@@ -13,6 +13,7 @@ final class Scenarios {
             case "walk": {
                 g.startRun();
                 s.run(2.2f);
+                s.run(1.0f);
                 s.shot("start");
                 // hold above-left of the boy: he walks towards the finger
                 float bx = g.screenX(g.boy.x), by = g.screenY(g.boy.y);
@@ -20,6 +21,12 @@ final class Scenarios {
                 s.film("hold", 1.6f, 0.2f);
                 s.up(0, bx - 150, by - 700);
                 s.film("release", 0.5f, 0.1f);
+                // sprint towards the locked door to see the hint
+                s.down(1, g.runX, g.runY);
+                s.down(0, g.screenX(g.room.doorX), g.screenY(g.room.exitY - 80));
+                s.film("sprint", 2.4f, 0.3f);
+                s.up(0, 0, 0);
+                s.up(1, g.runX, g.runY);
                 break;
             }
             case "heist": {
@@ -146,6 +153,31 @@ final class Scenarios {
                 }
                 s.waitFor(() -> g.phase == Game.DONE, 5);
                 System.out.println("final phase=" + g.phase + " events=" + s.host.events + " coins=" + g.coins + " gems=" + g.gems);
+                break;
+            }
+            case "search": {
+                g.startRun();
+                g.phase = Game.EXIT; g.phaseT = 2; g.nextRoom = 1; g.nextLoaded = true;
+                s.step();
+                s.waitFor(() -> g.phase == Game.PLAY, 5);
+                Guard q = g.guards.get(1);
+                g.guards.remove(0);
+                // stand in front of guard 2 until he raises the alarm
+                q.x = 1500; q.y = 1902; q.heading = (float) (Math.PI / 2);
+                g.boy.place(1760, 1905, 0);
+                g.camReady = false;
+                s.waitFor(() -> q.state == Guard.CHASE, 5);
+                s.shot("spotted");
+                // duck behind the wall to the south-west and wait
+                g.boy.place(1300, 2250, 0);
+                g.camReady = false;
+                String last = "";
+                for (int i = 0; i < 200; i++) {
+                    s.run(0.1f);
+                    String st = "state=" + q.state;
+                    if (!st.equals(last)) { System.out.println(String.format("t=%.1f %s guard=%.0f,%.0f sees=%b", i * 0.1f, st, q.x, q.y, q.seesBoy)); last = st; s.shot("s" + i); }
+                    if (q.state == Guard.PATROL) break;
+                }
                 break;
             }
             default:

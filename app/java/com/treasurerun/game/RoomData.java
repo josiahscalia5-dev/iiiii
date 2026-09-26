@@ -41,9 +41,10 @@ final class RoomData {
         // v0.5: the painted guard is live and patrols across the middle of the corridor; the case diamond is the heist
         room.objectiveHeist = "STEAL THE DIAMOND";
         room.guardH = 870.0f;
+        room.visionRange = 0.95f;
         room.beamColor = 0xFFFFE9A8;
         room.guards = new Room.GuardDef[]{
-                new Room.GuardDef(new float[][]{{290.0f, 1650.0f}, {850.0f, 1650.0f}}, new float[]{1.6f, 2.35f, 1.6f, -2.35f}, true)};
+                new Room.GuardDef(new float[][]{{290.0f, 1650.0f}, {850.0f, 1650.0f}}, new float[]{1.6f, 2.05f, 1.6f, -2.05f}, true)};
         Room.Heist heist = new Room.Heist();
         heist.gemX = 243.0f; heist.gemY = 995.0f; heist.gemSize = 110.0f; heist.tapR = 165.0f;
         heist.standX = 258.0f; heist.standY = 1322.0f;

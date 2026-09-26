@@ -2,7 +2,7 @@
 # usage: scripts/build.sh [versionCode] [versionName]   -> build/TreasureRun.apk
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
-VC="${1:-4}"; VN="${2:-0.4 (rooms foundation)}"
+VC="${1:-5}"; VN="${2:-0.5}"
 export JAVA_HOME="$ROOT/tools/jdk-21.0.5+11"
 rm -rf build && mkdir -p build/classes
 "$JAVA_HOME/bin/javac" -nowarn -Xlint:-options -source 8 -target 8 -encoding UTF-8 -bootclasspath tools/android-35.jar -d build/classes $(find app/java -name '*.java') 2>&1 | grep -v "^Note:" || true

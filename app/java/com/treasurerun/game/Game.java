@@ -97,6 +97,10 @@ final class Game {
     boolean interactNear;
     int pausePointer = -1, handPointer = -1;
 
+    // first-run controls hint
+    boolean hintDone;
+    float hintT = -1;
+
     // banner / caught
     String bannerTop = "", bannerMain = "";
     float bannerT = -1;
@@ -145,6 +149,7 @@ final class Game {
     void startRun() {
         coins = 0;
         gems = 0;
+        hintT = -1;
         loadRoomSync(0);
         enterRoom();
         running = true;
@@ -313,7 +318,7 @@ final class Game {
             onHand();
             return;
         }
-        if (steerId == -1 && phase == PLAY) {
+        if (steerId == -1 && (phase == PLAY || phase == INTRO)) {
             steerId = id;
             steerX = steerDownX = x;
             steerY = steerDownY = y;
@@ -351,6 +356,7 @@ final class Game {
             steerId = -1;
             boolean tap = time - steerDownT < 0.3f && steerTravel < 14 * dp;
             if (tap && phase == PLAY) onTap(x, y);
+            if (phase == PLAY) hintDone = true;
         }
     }
 
@@ -436,6 +442,13 @@ final class Game {
         lockedHintT = Math.max(-1, lockedHintT - dt);
         if (tapMarkT >= 0) { tapMarkT += dt; if (tapMarkT > 0.6f) tapMarkT = -1; }
         if (bannerT >= 0) { bannerT += dt; if (bannerT > 3.2f) bannerT = -1; }
+        // controls hint: once, at the start of the first run, until the player has walked (or 7s)
+        if (!hintDone && roomIndex == 0 && phase == PLAY && hintT == -1) hintT = 0;
+        if (hintT >= 0) {
+            hintT += dt;
+            if (hintDone && hintT < 6.6f) hintT = 6.6f;   // fade out as soon as he walks
+            if (hintT > 7) hintT = -2;                    // done for this run
+        }
         for (int i = 0; i < coinPop.length; i++) if (coinTaken[i] && coinPop[i] < 1) coinPop[i] = Math.min(1, coinPop[i] + dt / 0.4f);
         for (int i = 0; i < gemPop.length; i++) if (gemTaken[i] && gemPop[i] < 1) gemPop[i] = Math.min(1, gemPop[i] + dt / 0.45f);
         phaseT += dt;
@@ -526,7 +539,9 @@ final class Game {
                 break;
             }
             case CAUGHT: {
+                boy.hop = phaseT < 0.35f ? (float) Math.sin(phaseT / 0.35f * Math.PI) : 0;
                 if (phaseT > 1.7f) {
+                    boy.hop = 0;
                     resetRoomState();
                     enterRoom();
                     return;
@@ -561,7 +576,7 @@ final class Game {
 
         // guards
         boolean active = phase == PLAY;
-        for (Guard g : guards) {
+        if (phase != CAUGHT) for (Guard g : guards) {
             boolean caught = g.update(dt, nav, boy, sprint && boy.moveAmt > 0.5f, active);
             if (caught && phase == PLAY) {
                 phase = CAUGHT;
@@ -762,6 +777,7 @@ final class Game {
     }
 
     private final Item[] pool = new Item[256];
+    private final float[] itemBoxes = new float[4 * 64], itemDepth = new float[64];
     private final List<Item> items = new ArrayList<Item>();
     private final Comparator<Item> byDepth = new Comparator<Item>() {
         @Override
@@ -809,9 +825,8 @@ final class Game {
     private void drawWorldItems(Canvas c) {
         items.clear();
         int n = 0;
-        // dynamic things and their screen-space boxes (occluders are only needed where something is behind them)
-        float[] boxes = new float[4 * 64];
-        float[] bdepth = new float[64];
+        // dynamic things and their world boxes (occluders are only needed where something is behind them)
+        float[] boxes = itemBoxes, bdepth = itemDepth;
         int nb = 0;
         Item it = pool[n++];
         it.kind = K_BOY;
@@ -1195,6 +1210,7 @@ final class Game {
             }
         }
         if (bannerT >= 0) drawBanner(c);
+        if (hintT >= 0) drawControlsHint(c);
         if (phase == CAUGHT) {
             float t = clamp(phaseT / 0.25f, 0, 1);
             float sc = t < 1 ? 0.5f + 0.7f * t : 1.2f - 0.2f * clamp((phaseT - 0.25f) / 0.2f, 0, 1);
@@ -1202,6 +1218,27 @@ final class Game {
             float a = clamp((1.5f - phaseT) / 0.3f, 0, 1);
             fitted(c, "CAUGHT!", sw / 2f, sh * 0.42f, size, sw * 0.9f, Math.round(255 * a), Color.rgb(255, 120, 90), Color.rgb(220, 30, 30));
         }
+    }
+
+    private void drawControlsHint(Canvas c) {
+        float a = clamp(hintT / 0.4f, 0, 1) * clamp((7 - hintT) / 0.4f, 0, 1);
+        if (a <= 0) return;
+        float cx = (runX - runR * 1.3f) / 2f;
+        float y = runY + runR * 0.2f;
+        float size = sw * 0.042f;
+        String l1 = "HOLD ANYWHERE TO WALK", l2 = "TAP A SPOT TO GO THERE";
+        text.setTextSize(size);
+        float w = Math.max(text.measureText(l1), text.measureText(l2)) + size * 1.6f;
+        float h = size * 3.1f;
+        tmpR.set(cx - w / 2, y - h / 2, cx + w / 2, y + h / 2);
+        fill.setShader(null);
+        fill.setColor(Color.argb(Math.round(200 * a), 16, 12, 40));
+        c.drawRoundRect(tmpR, h * 0.3f, h * 0.3f, fill);
+        stroke.setStrokeWidth(size * 0.12f);
+        stroke.setColor(Color.argb(Math.round(200 * a), 255, 200, 80));
+        c.drawRoundRect(tmpR, h * 0.3f, h * 0.3f, stroke);
+        outlined(c, l1, cx, y - size * 0.25f, size, Color.argb(Math.round(255 * a), 255, 255, 255), Paint.Align.CENTER, a);
+        outlined(c, l2, cx, y + size * 1.05f, size * 0.85f, Color.argb(Math.round(255 * a), 255, 225, 110), Paint.Align.CENTER, a);
     }
 
     private void drawBanner(Canvas c) {

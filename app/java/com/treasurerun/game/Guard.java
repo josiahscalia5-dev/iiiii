@@ -57,7 +57,7 @@ final class Guard {
         this.def = def;
         walkSpeed = room.speed * 0.42f;
         chaseSpeed = room.speed * 1.08f;
-        range = room.boyH * 1.25f;
+        range = room.boyH * room.visionRange;
         halfAngle = (float) Math.toRadians(30);
         catchR = room.boyH * 0.3f;
         hearR = room.boyH * 0.75f;
