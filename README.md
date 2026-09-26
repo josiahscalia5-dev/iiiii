@@ -4,11 +4,11 @@ Cute, colorful cartoon museum **stealth/heist** game: a masked boy sneaks throug
 
 ## Where things stand (2026-09-26)
 - **Baseline:** `reference/TreasureRun-v0_4-rooms.apk` = v0.4 "rooms foundation", the last build from the previous Claude account. Install it to see exact v0.4 behaviour.
-- **This repo:** full source recovered from that APK (jadx), fixed so it compiles, a working no-Gradle build pipeline, and v0.5 art work in progress.
+- **This repo:** full source recovered from that APK (jadx), fixed so it compiles *and runs* (0.4.1, see Known issues #1), a working no-Gradle build pipeline, and v0.5 art work in progress.
 - **No v0.5 gameplay code has been written yet.** Next session starts at "Next steps" below.
 
 ## Known issues (read first)
-1. `GameView.onTouchEvent` could not be decompiled and is **stubbed** (`return true`). Builds from this source show v0.4 but the joystick does nothing. That's acceptable only because v0.5 replaces the joystick controls entirely.
+1. **Fixed in 0.4.1 (2026-09-26):** builds from the recovered source hung forever on the Android launch splash (icon on dark background). Cause: jadx turned the hotspot→element search in the `ScreenView` constructor into `while (true)` with no exit, and the 9 level-select door hotspots match no element, so `onCreate` never returned. Also fixed: two int-division decompile errors (`GameView.updateCamera` camera scale, and HUD button size in `drawCircleSprite`), and `GameView.onTouchEvent` (joystick, sprint, hand and pause), rebuilt by hand from the v0.4 smali. The rebuilt dex now matches v0.4's arithmetic and calls method for method. To re-check after edits, decode both APKs with apktool and diff each method's `div-*`/`*-to-*`/`Math` ops.
 2. **Signing:** `scripts/build.sh` signs with `keystore/treasurerun-debug.jks` (alias `treasurerun`, store/key password `treasurerun`). This debug key is committed on purpose so builds made from any account install as updates over each other. v0.4 was signed with a different key that isn't available, so **uninstall v0.4 once** before installing the first build from this repo.
 3. `art/pipeline/rooms2.py` outputs (Room 2 guards/beams painted out, diamond removed from Room 1 case, guard side sprite) were produced at the end of a session and **have not been visually reviewed**. Check `art/wip/room2_final.png`, `r2_g1_clean.png`, `r2_g2_clean.png`, `case_empty.png`, `parts/guard_side_full.png` first.
 4. `art/wip/parts/boy_tq_body.png` has a visible vertical seam where the arm was cut (`torso_x` in `art/pipeline/boy_cuts.py`); needs a fix.
@@ -16,7 +16,7 @@ Cute, colorful cartoon museum **stealth/heist** game: a masked boy sneaks throug
 ## Build
 ```bash
 tools/setup_tools.sh          # JDK 21, android.jar (API 35), dx, apktool, uber-apk-signer  (add --art for LaMa + U2Net models)
-scripts/build.sh 5 "0.5"      # -> build/TreasureRun.apk  (javac -source 8 -> dx --min-sdk 21 -> apktool b -> zipalign + v1/v2/v3 sign)
+scripts/build.sh 7 "0.5"      # -> build/TreasureRun.apk  (0.4.1 shipped as versionCode 6; keep versionCode increasing)  (javac -source 8 -> dx --min-sdk 21 -> apktool b -> zipalign + v1/v2/v3 sign)
 ```
 All tools come from GitHub-hosted URLs (the claude.ai sandbox blocks Google Maven / dl.google.com, so d8 is unavailable; `dx` from the dex2jar release is used instead).
 
@@ -53,4 +53,4 @@ All tools come from GitHub-hosted URLs (the claude.ai sandbox blocks Google Mave
 1. Review/fix the unreviewed `rooms2.py` outputs and the TQ seam; write cleaned backgrounds/occluders into `app/assets/rooms/` (keep originals recoverable from `reference/`).
 2. Move gameplay out of `GameView` (a View) into a `Game` class that uses only android.graphics, so it runs in the harness.
 3. Implement walk rig, guards, diamond steal, touch controls, transition; QA with harness renders.
-4. `scripts/build.sh 5 "0.5"`, hand APK to owner, stop.
+4. `scripts/build.sh 7 "0.5"`, hand APK to owner, stop.

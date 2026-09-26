@@ -112,17 +112,13 @@ final class ScreenView extends View {
                     float f3 = (hotspotArr[i3].shape == 1 ? hotspotArr[i3].a : (hotspotArr[i3].a + hotspotArr[i3].c) / 2.0f) * f;
                     float f4 = (hotspotArr[i3].shape == 1 ? hotspotArr[i3].b : (hotspotArr[i3].b + hotspotArr[i3].d) / 2.0f) * f2;
                     this.hotElem[i2][i3] = -1;
-                    int i4 = 0;
-                    while (true) {
-                        if (i4 < elemArr.length) {
-                            Elem elem = elemArr[i4];
-                            if (f3 >= elem.cx - elem.halfW() && f3 <= elem.cx + elem.halfW() && f4 >= elem.cy - elem.halfH()) {
-                                if (f4 <= elem.halfH() + elem.cy) {
-                                    this.hotElem[i2][i3] = i4;
-                                    break;
-                                }
-                            }
-                            i4++;
+                    // jadx emitted this as while(true) with no exit when nothing matched,
+                    // which hung onCreate on the splash screen.
+                    for (int i4 = 0; i4 < elemArr.length; i4++) {
+                        Elem elem = elemArr[i4];
+                        if (f3 >= elem.cx - elem.halfW() && f3 <= elem.cx + elem.halfW() && f4 >= elem.cy - elem.halfH() && f4 <= elem.cy + elem.halfH()) {
+                            this.hotElem[i2][i3] = i4;
+                            break;
                         }
                     }
                 }

@@ -650,7 +650,7 @@ final class GameView extends View {
     }
 
     private void updateCamera(float f) {
-        float max = Math.max(this.sw / this.room.w, this.sh / this.room.h);
+        float max = Math.max(this.sw / (float) this.room.w, this.sh / (float) this.room.h);
         float max2 = this.room.viewW > 0.0f ? Math.max(1.0f, (this.sw / this.room.viewW) / max) : 1.0f;
         float clamp = clamp((1.0f - this.room.depth(this.by)) / (1.0f - this.room.sFar), 0.0f, 1.0f);
         float f2 = max2 * (((3.0f - (clamp * 2.0f)) * clamp * clamp * (this.room.zoomFar - 1.0f)) + 1.0f) * max;
@@ -1022,7 +1022,7 @@ final class GameView extends View {
     private void drawCircleSprite(Canvas canvas, String str, float f, float f2, float f3, int i) {
         Bitmap bitmap = this.host.bitmap(str);
         if (bitmap != null) {
-            float width = (bitmap.getWidth() / (bitmap.getWidth() - 8)) * f3;
+            float width = (bitmap.getWidth() / (float) (bitmap.getWidth() - 8)) * f3;
             this.tmpR.set(f - width, f2 - width, f + width, width + f2);
             this.bmp.setAlpha(i);
             canvas.drawBitmap(bitmap, (Rect) null, this.tmpR, this.bmp);
@@ -1062,8 +1062,67 @@ final class GameView extends View {
         canvas.drawText(str, f, f2, this.text);
     }
 
+    // Rebuilt by hand from the v0.4 smali (jadx could not decompile it).
     @Override
-    public boolean onTouchEvent(android.view.MotionEvent e) { return true; }
+    public boolean onTouchEvent(android.view.MotionEvent e) {
+        int action = e.getActionMasked();
+        int index = e.getActionIndex();
+        switch (action) {
+            case 0: // ACTION_DOWN
+            case 5: { // ACTION_POINTER_DOWN
+                float x = e.getX(index);
+                float y = e.getY(index);
+                int id = e.getPointerId(index);
+                if (dist(x, y, this.pauseX, this.pauseY) < this.pauseR * 1.35f) {
+                    this.pauseFlash = 1.0f;
+                    performHapticFeedback(FADE_OUT);
+                    this.host.onGamePause();
+                } else if (dist(x, y, this.runX, this.runY) < this.runR * 1.25f) {
+                    this.runPointer = id;
+                    performHapticFeedback(FADE_OUT);
+                } else if (dist(x, y, this.handX, this.handY) < this.handR * 1.25f) {
+                    this.handPointer = id;
+                    this.handFlash = 1.0f;
+                    onHand();
+                } else if (this.joyPointer < 0 && (dist(x, y, this.joyX, this.joyY) < this.joyR * 1.6f || (x < this.sw * 0.5f && y > this.sh * 0.6f))) {
+                    this.joyPointer = id;
+                    setKnob(x, y);
+                }
+                break;
+            }
+            case 2: // ACTION_MOVE
+                for (int i = 0; i < e.getPointerCount(); i++) {
+                    if (e.getPointerId(i) == this.joyPointer) {
+                        setKnob(e.getX(i), e.getY(i));
+                    }
+                }
+                break;
+            case 1: // ACTION_UP
+            case 3: // ACTION_CANCEL
+                this.handPointer = -1;
+                this.runPointer = -1;
+                this.joyPointer = -1;
+                this.joyDy = 0.0f;
+                this.joyDx = 0.0f;
+                break;
+            case 6: { // ACTION_POINTER_UP
+                int id = e.getPointerId(index);
+                if (id == this.joyPointer) {
+                    this.joyPointer = -1;
+                    this.joyDy = 0.0f;
+                    this.joyDx = 0.0f;
+                }
+                if (id == this.runPointer) {
+                    this.runPointer = -1;
+                }
+                if (id == this.handPointer) {
+                    this.handPointer = -1;
+                }
+                break;
+            }
+        }
+        return true;
+    }
 
     private void setKnob(float f, float f2) {
         float f3 = (f - this.joyX) / this.knobTravel;
