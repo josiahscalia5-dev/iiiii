@@ -4,3 +4,5 @@ tools/*
 __pycache__/
 *.pyc
 .DS_Store
+art/wip/*_full.png
+art/wip/clean/
