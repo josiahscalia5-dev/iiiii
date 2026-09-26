@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Robolectric harness: runs the real app classes on the Android framework (native Skia graphics) on a desktop JVM.
+     usage: harness/robolectric/run.sh  (builds the APK resources first) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.treasurerun</groupId>
+  <artifactId>harness</artifactId>
+  <version>1</version>
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency><groupId>org.robolectric</groupId><artifactId>robolectric</artifactId><version>4.14.1</version><scope>test</scope>
+      <exclusions><exclusion><groupId>androidx.test</groupId><artifactId>monitor</artifactId></exclusion><exclusion><groupId>androidx.test.espresso</groupId><artifactId>espresso-idling-resource</artifactId></exclusion></exclusions></dependency>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version><scope>test</scope></dependency>
+    <!-- compile against the SDK stub jar; Robolectric swaps in the real framework (android-all-instrumented, copied below) at runtime -->
+    <dependency><groupId>android</groupId><artifactId>android-stub</artifactId><version>35</version><scope>system</scope><systemPath>${project.basedir}/../../tools/android-35.jar</systemPath></dependency>
+    <dependency><groupId>androidx.local</groupId><artifactId>monitor-1.7.2</artifactId><version>1</version><scope>system</scope><systemPath>${project.basedir}/lib/monitor-1.7.2.jar</systemPath></dependency>
+    <dependency><groupId>androidx.local</groupId><artifactId>espresso-idling-resource-3.6.1</artifactId><version>1</version><scope>system</scope><systemPath>${project.basedir}/lib/espresso-idling-resource-3.6.1.jar</systemPath></dependency>
+    <dependency><groupId>androidx.local</groupId><artifactId>tracing-1.1.0</artifactId><version>1</version><scope>system</scope><systemPath>${project.basedir}/lib/tracing-1.1.0.jar</systemPath></dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.0</version>
+        <executions><execution><id>app-src</id><phase>generate-test-sources</phase><goals><goal>add-test-source</goal></goals>
+          <configuration><sources><source>../../app/java</source></sources></configuration></execution></executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.2</version>
+        <configuration>
+          <redirectTestOutputToFile>false</redirectTestOutputToFile>
+          <argLine>--add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
+          <trimStackTrace>false</trimStackTrace>
+          <systemPropertyVariables>
+            <robolectric.offline>true</robolectric.offline>
+            <robolectric.dependency.dir>${project.build.directory}/android-all</robolectric.dependency.dir>
+            <treasurerun.out>${project.basedir}/../../build/harness</treasurerun.out>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId><version>3.8.1</version>
+        <executions><execution><id>android-all</id><phase>process-test-resources</phase><goals><goal>copy</goal></goals>
+          <configuration><artifactItems><artifactItem><groupId>org.robolectric</groupId><artifactId>android-all-instrumented</artifactId><version>15-robolectric-12650502-i7</version></artifactItem></artifactItems>
+            <outputDirectory>${project.build.directory}/android-all</outputDirectory></configuration></execution></executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -58,6 +58,7 @@ final class ScreenView extends View {
     private final Rect safe;
     private final ArtSource source;
     private final RectF tmp;
+    private int unlocked = 1, completedLevel = 1;
 
     interface ArtSource {
         Bitmap bitmap(String str);
@@ -126,6 +127,50 @@ final class ScreenView extends View {
             } else {
                 return;
             }
+        }
+    }
+
+    /** Levels the player can start; doors 3+ that are open get a gold "play" badge over the painted padlock. */
+    void setUnlocked(int n) {
+        this.unlocked = n;
+        invalidate();
+    }
+
+    void setCompletedLevel(int n) {
+        this.completedLevel = n;
+        invalidate();
+    }
+
+    private final Paint badge = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path tri = new Path();
+
+    private void drawUnlockedDoors(Canvas canvas, FullBleed.Layout layout, int alpha) {
+        float w = LayoutData.ART_SIZE[Screens.LEVELS][0], h = LayoutData.ART_SIZE[Screens.LEVELS][1];
+        for (Hotspot hs : Screens.HOTSPOTS[Screens.LEVELS]) {
+            if (!hs.id.startsWith("door")) continue;
+            int n = Integer.parseInt(hs.id.substring(4));
+            if (n < 3 || n > unlocked || n > Level.COUNT) continue;
+            float l = hs.a * w * layout.s + layout.ox, t = hs.b * h * layout.s + layout.oy;
+            float r = hs.c * w * layout.s + layout.ox, b = hs.d * h * layout.s + layout.oy;
+            float cx = (l + r) / 2f, cy = t + (b - t) * 0.62f, rad = (r - l) * 0.25f;
+            // warm glow on the door
+            badge.setShader(new android.graphics.RadialGradient(cx, (t + b) / 2f, (b - t) * 0.62f,
+                    new int[]{Color.argb(alpha * 90 / 255, 255, 210, 90), Color.argb(0, 255, 210, 90)}, null, android.graphics.Shader.TileMode.CLAMP));
+            canvas.drawCircle(cx, (t + b) / 2f, (b - t) * 0.62f, badge);
+            badge.setShader(null);
+            // gold play badge covering the padlock
+            badge.setColor(Color.argb(alpha * 230 / 255, 40, 20, 0));
+            canvas.drawCircle(cx, cy, rad * 1.12f, badge);
+            badge.setShader(new android.graphics.LinearGradient(0, cy - rad, 0, cy + rad, Color.argb(alpha, 255, 232, 120), Color.argb(alpha, 240, 150, 20), android.graphics.Shader.TileMode.CLAMP));
+            canvas.drawCircle(cx, cy, rad, badge);
+            badge.setShader(null);
+            badge.setColor(Color.argb(alpha, 255, 255, 255));
+            tri.reset();
+            tri.moveTo(cx - rad * 0.32f, cy - rad * 0.48f);
+            tri.lineTo(cx + rad * 0.52f, cy);
+            tri.lineTo(cx - rad * 0.32f, cy + rad * 0.48f);
+            tri.close();
+            canvas.drawPath(tri, badge);
         }
     }
 
@@ -255,12 +300,17 @@ final class ScreenView extends View {
             float f3 = layout.k * layout.s;
             for (int i3 = 0; i3 < elemArr.length; i3++) {
                 Elem elem = elemArr[i3];
-                Bitmap bitmap2 = this.source.bitmap(elem.sprite);
+                String sprite = elem.sprite;
+                if (i == Screens.COMPLETE && "title".equals(elem.id) && completedLevel >= 2 && completedLevel <= Level.COUNT) {
+                    sprite = "layers/complete_title_" + completedLevel + ".png";   // "LEVEL n COMPLETE!"
+                }
+                Bitmap bitmap2 = this.source.bitmap(sprite);
                 if (bitmap2 != null) {
                     this.dst.set(layout.cx[i3] + ((elem.sx0 - elem.cx) * f3), layout.cy[i3] + ((elem.sy0 - elem.cy) * f3), layout.cx[i3] + ((elem.sx1 - elem.cx) * f3), ((elem.sy1 - elem.cy) * f3) + layout.cy[i3]);
                     canvas.drawBitmap(bitmap2, (Rect) null, this.dst, this.bitmapPaint);
                 }
             }
+            if (i == Screens.LEVELS) drawUnlockedDoors(canvas, layout, i2);
             if (z && this.pressed != null) {
                 buildPath(i, this.pressed, this.path, 0.0f);
                 canvas.drawPath(this.path, this.pressPaint);

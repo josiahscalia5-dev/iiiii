@@ -1,15 +1,19 @@
 package com.treasurerun.game;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import com.treasurerun.game.GameView;
 import com.treasurerun.game.ScreenView;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +23,15 @@ import java.util.Iterator;
 import java.util.Map;
 
 /* loaded from: classes.dex */
-public final class MainActivity extends Activity implements ScreenView.Listener, ScreenView.ArtSource, GameView.Host {
+public final class MainActivity extends Activity implements ScreenView.Listener, ScreenView.ArtSource, Game.Host {
     private final Map<String, Bitmap> bitmaps = new HashMap();
     private GameView game;
     private boolean inGame;
     private ScreenView screens;
     private Toast toast;
+    private SoundPool sounds;
+    private final int[] soundIds = new int[Game.SOUNDS.length];
+    private int unlocked = 1, lastLevel = 1;
 
     @Override // android.app.Activity
     protected void onCreate(Bundle bundle) {
@@ -43,6 +50,10 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
             window.setAttributes(attributes);
         }
         loadScreen(0);
+        SharedPreferences prefs = getSharedPreferences("progress", MODE_PRIVATE);
+        unlocked = Math.max(1, Math.min(Level.COUNT, prefs.getInt("unlocked", 1)));
+        lastLevel = unlocked;
+        initSounds();
         FrameLayout frameLayout = new FrameLayout(this);
         this.screens = new ScreenView(this, this);
         this.screens.setListener(this);
@@ -60,16 +71,17 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
                         MainActivity.this.loadScreen(i2);
                     }
                 }
-                MainActivity.this.bitmap("hud/joy_base.png");
-                MainActivity.this.bitmap("hud/joy_knob.png");
                 MainActivity.this.bitmap("hud/btn_hand.png");
                 MainActivity.this.bitmap("hud/btn_run.png");
                 MainActivity.this.bitmap("hud/btn_pause.png");
                 MainActivity.this.bitmap("hud/icon_coin.png");
                 MainActivity.this.bitmap("hud/panel.png");
-                for (Pose pose : RoomData.POSES) {
-                    MainActivity.this.bitmap(pose.sprite);
+                for (Rig.View v : new Rig.View[]{Rig.BOY_BACK, Rig.BOY_TQ, Rig.BOY_FRONT, Rig.GUARD_TQB, Rig.GUARD_TQF, Rig.GUARD_FRONT}) {
+                    MainActivity.this.bitmap(v.body);
+                    if (v.arm != null) MainActivity.this.bitmap(v.arm);
                 }
+                MainActivity.this.bitmap("layers/complete_replay.png");
+                MainActivity.this.bitmap("layers/complete_home.png");
                 MainActivity.this.bitmap("rooms/coin.png");
                 MainActivity.this.bitmap("rooms/diamond.png");
             }
@@ -138,6 +150,8 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
     /* JADX INFO: Access modifiers changed from: private */
     public void go(int i) {
         loadScreen(i);
+        this.screens.setUnlocked(unlocked);
+        this.screens.setCompletedLevel(lastLevel);
         cancelToast();
         showMenus();
         this.screens.showScreen(i);
@@ -152,28 +166,74 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
         }
     }
 
-    private void startGame() {
+    private void startGame(int level) {
         cancelToast();
+        lastLevel = Math.max(1, Math.min(Level.COUNT, level));
         this.inGame = true;
         this.game.setVisibility(0);
         this.screens.setVisibility(8);
         this.game.requestApplyInsets();
-        this.game.startRun();
+        this.game.startLevel(lastLevel);
     }
 
-    @Override // com.treasurerun.game.GameView.Host
-    public void onGamePause() {
+    private void initSounds() {
+        sounds = new SoundPool.Builder().setMaxStreams(6)
+                .setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build())
+                .build();
+        for (int i = 0; i < Game.SOUNDS.length; i++) {
+            try {
+                AssetFileDescriptor fd = getAssets().openFd(Game.SOUNDS[i]);
+                soundIds[i] = sounds.load(fd, 1);
+                fd.close();
+            } catch (IOException e) {
+                soundIds[i] = 0;
+            }
+        }
+    }
+
+    // ---- Game.Host ----
+    @Override
+    public void sound(int id, float volume) {
+        if (sounds != null && id >= 0 && id < soundIds.length && soundIds[id] != 0) sounds.play(soundIds[id], volume, volume, 1, 0, 1f);
+    }
+
+    @Override
+    public void haptic(final int kind) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (game != null) game.performHapticFeedback(kind >= 2 ? HapticFeedbackConstants.LONG_PRESS : kind == 1 ? HapticFeedbackConstants.CONTEXT_CLICK : HapticFeedbackConstants.VIRTUAL_KEY);
+            }
+        });
+    }
+
+    @Override
+    public void pause() {
         go(0);
     }
 
-    @Override // com.treasurerun.game.GameView.Host
-    public void onGameFinished(int i, int i2) {
-        runOnUiThread(new Runnable() { // from class: com.treasurerun.game.MainActivity.2
-            @Override // java.lang.Runnable
+    @Override
+    public void home() {
+        go(0);
+    }
+
+    @Override
+    public void levelComplete(final int level, int coins, int gems) {
+        runOnUiThread(new Runnable() {
+            @Override
             public void run() {
+                lastLevel = level;
+                if (level + 1 > unlocked) {
+                    unlocked = Math.min(Level.COUNT, level + 1);
+                    getSharedPreferences("progress", MODE_PRIVATE).edit().putInt("unlocked", unlocked).apply();
+                }
                 MainActivity.this.go(2);
             }
         });
+    }
+
+    int unlockedLevels() {
+        return unlocked;
     }
 
     @Override // com.treasurerun.game.ScreenView.Listener
@@ -181,7 +241,7 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
         switch (i) {
             case 0:
                 if ("play".equals(str)) {
-                    startGame();
+                    startGame(unlocked);
                     break;
                 } else if ("levels".equals(str)) {
                     go(3);
@@ -201,13 +261,18 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
                 }
             case 2:
                 if ("next".equals(str)) {
-                    go(3);
+                    if (lastLevel < Level.COUNT) {
+                        startGame(lastLevel + 1);
+                    } else {
+                        go(3);
+                        say("More levels are coming soon!");
+                    }
                     break;
                 } else if ("home".equals(str)) {
                     go(0);
                     break;
                 } else if ("replay".equals(str)) {
-                    startGame();
+                    startGame(lastLevel);
                     break;
                 } else {
                     say("Coming soon");
@@ -217,14 +282,15 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
                 if ("back".equals(str) || "back2".equals(str)) {
                     go(0);
                     break;
-                } else if ("door1".equals(str)) {
-                    startGame();
-                    break;
-                } else if ("door2".equals(str)) {
-                    say("Level 2 isn't built yet");
-                    break;
                 } else if (str.startsWith("door")) {
-                    say("Level " + str.substring(4) + " is locked");
+                    int n = Integer.parseInt(str.substring(4));
+                    if (n <= unlocked) {
+                        startGame(n);
+                    } else if (n <= Level.COUNT) {
+                        say("Level " + n + " is locked. Escape level " + (n - 1) + " first!");
+                    } else {
+                        say("Level " + n + " is coming soon");
+                    }
                     break;
                 } else {
                     say("Coming soon");
@@ -254,6 +320,15 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
             go(0);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (sounds != null) {
+            sounds.release();
+            sounds = null;
         }
     }
 

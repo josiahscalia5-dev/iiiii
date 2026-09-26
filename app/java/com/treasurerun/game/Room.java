@@ -5,6 +5,9 @@ final class Room {
     String[] bg;
     int[] bgY;
     float boyH;
+    float[] caseDiamond;   // Room 1: diamond inside the case {drawX, drawY, size, standX, standY}
+    float[][] lamps;       // {x, y, glow radius} flickering light sources
+    float[] led;           // blinking security-camera LED {x, y, r}
     float[][] coins;
     float doorX;
     float doorY;
