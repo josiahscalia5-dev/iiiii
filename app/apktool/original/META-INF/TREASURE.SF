@@ -1,0 +1,476 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA-256-Digest-Manifest: RieDi1HrmvhauL7NhiOws5EE6syVFZQQEKLr0FzYiLc=
+X-Android-APK-Signed: 2, 3
+
+Name: AndroidManifest.xml
+SHA-256-Digest: RKVKXc8QMrMJEILellsRU+Y/073Y6bqJNt2epEv+vHo=
+
+Name: assets/fonts/LilitaOne-Regular.ttf
+SHA-256-Digest: ixdzI/APjQmEUYbnyA2V2BakIgAuBzvCi5EMqqpQZ4A=
+
+Name: assets/hud/btn_hand.png
+SHA-256-Digest: f3GbWE2jcwy9NN8eX/4xHJggFfWVGWEs1FR9Btfu0r4=
+
+Name: assets/hud/btn_pause.png
+SHA-256-Digest: Q+TkgRxQhjPhPCOJ93Wh0Bnly5XsCi/1R+q0FNqHAYI=
+
+Name: assets/hud/btn_run.png
+SHA-256-Digest: QVG7oqeqglFt311PTZaWA81YvvuQV7JLTX4dn/tQfVs=
+
+Name: assets/hud/icon_coin.png
+SHA-256-Digest: UAZwkdbJZvCrqzk99W2awLvN+RpfOxvNQGbB0fPBHTA=
+
+Name: assets/hud/joy_base.png
+SHA-256-Digest: Wkmw/uwLJkDB1Yxhooiw7NPzMYJeYIHb43ISLVFkzYI=
+
+Name: assets/hud/joy_knob.png
+SHA-256-Digest: y4+0VWsYmbDr70DWs3MPpQtrL3ozldW7o3LZ0TuZAfU=
+
+Name: assets/hud/panel.png
+SHA-256-Digest: 2+lr4rXL0+BGHBF/VTaGk9fCl7b7iNdMSyab0iIQw2A=
+
+Name: assets/layers/complete_bg.jpg
+SHA-256-Digest: FKvAnfysuV/ydBzwfURIZpiPcxylKiy038gZrAaCcLc=
+
+Name: assets/layers/complete_coin_pill.png
+SHA-256-Digest: hWRrR2D7zWQZpcKWOQXTQRYN/qPsk+xDRGZYDPA5K44=
+
+Name: assets/layers/complete_home.png
+SHA-256-Digest: J9994ODPFaxptf9qNQxF2ZN1c7zlcUzJgNUjHirC0j4=
+
+Name: assets/layers/complete_next.png
+SHA-256-Digest: hAewd10ZVT/HavfzB4lEOskcATG4cxkVGxfxJ3UK5oM=
+
+Name: assets/layers/complete_pause.png
+SHA-256-Digest: K/OgLMkMYWit2+S5fvOeLP9QT0VMsYoC5T9LyeF0Tu0=
+
+Name: assets/layers/complete_replay.png
+SHA-256-Digest: mWZ8ibTfWg2+KR6fHpK8OOClysoNIyYxplMyTzXVJJA=
+
+Name: assets/layers/complete_settings.png
+SHA-256-Digest: YFDPoZPyBuy4y7gf/olcpmvzr5oWMtAFNa/ZxQpSb+o=
+
+Name: assets/layers/complete_title.png
+SHA-256-Digest: ilnot3smdKi83/iAz5cG5pHeEhKcVgiboc6U1l7BH/s=
+
+Name: assets/layers/gameplay_bg.jpg
+SHA-256-Digest: +y6/MlOkUsyHqmPc9k2YJwmoNiwb1BaxU07lxzWaLBM=
+
+Name: assets/layers/gameplay_coin_pill.png
+SHA-256-Digest: TlUHBsg0+DUZB/RhgA97gJhvWROZgtoGqJByf4EkT3o=
+
+Name: assets/layers/gameplay_hand.png
+SHA-256-Digest: uRElFtPuUeZWZ3HMoqnMpkwg/Jpe/l13lAzEbwO0s94=
+
+Name: assets/layers/gameplay_joystick.png
+SHA-256-Digest: uYY2PO62ZBdEiW7v1MIfOdUYaWVgZMZ85uNdfPZRThI=
+
+Name: assets/layers/gameplay_key_pill.png
+SHA-256-Digest: pjOQgV4cfikgxOv7IcJ8hlSA1ZIN+xTvzBB9dJYbkBM=
+
+Name: assets/layers/gameplay_objective.png
+SHA-256-Digest: ewEeVvfjPTjvJ2beojRxyttyUKBKkjvNQtWAUn4oYbI=
+
+Name: assets/layers/gameplay_pause.png
+SHA-256-Digest: S2iGKOlcfYedymNyQw9HxprgDjoTtbFjhb8ExjauY+M=
+
+Name: assets/layers/gameplay_settings.png
+SHA-256-Digest: 0mk+kjLL75skeDQHOcVIx675B/+ieenWQJd9LIMKaWY=
+
+Name: assets/layers/gameplay_sprint.png
+SHA-256-Digest: tJ+3Kfb15z9gbuyFZaJHNtYBTjzd9bxjQaWT2grWJ4A=
+
+Name: assets/layers/levels_back.png
+SHA-256-Digest: ks6Qc6wzar6I+Ru+mzij3VQs3DziTOZyzybz9WzVDOI=
+
+Name: assets/layers/levels_bg.jpg
+SHA-256-Digest: 9uvnoOT7APDDVa+5Wo1L/KRdIOBbCRbJ+emmhLddHQw=
+
+Name: assets/layers/levels_chevron.png
+SHA-256-Digest: YctrYOFu8UItNKcNj6/XJ1k7F+IAWUOFHZgj3tgsobg=
+
+Name: assets/layers/levels_coin_pill.png
+SHA-256-Digest: zIvOf0Y7wUoyAJEEld7Rq5ydh2/pTGc6+xUjDGtKsac=
+
+Name: assets/layers/levels_header.png
+SHA-256-Digest: Yyyi6NRKSFSfI/hMPc3Y7k8V7BFA3882cmMwDb4uUDY=
+
+Name: assets/layers/levels_key_pill.png
+SHA-256-Digest: qRY7mOtmxMuk35hnZt7GUCXAP45vRptOnPdOWJoUuHE=
+
+Name: assets/layers/levels_settings.png
+SHA-256-Digest: DognZ6lgfg6dAazPx6AqLjLuSFrys12D/souqzxmSZs=
+
+Name: assets/layers/splash_bg.jpg
+SHA-256-Digest: sJ93MnBInFd5UPI4YmY4Kj0R7TUS6SGKSv+W0sAvl1k=
+
+Name: assets/layers/splash_coin_pill.png
+SHA-256-Digest: 6L0HbDtXZVsFX6nO2IrZAlIF5lusgcDEYOomYMs1XFk=
+
+Name: assets/layers/splash_levels.png
+SHA-256-Digest: S+Zdh6fUY2fvCNpF65TDPwiDfV99KDWBUkzJral307Q=
+
+Name: assets/layers/splash_logo.png
+SHA-256-Digest: Jb9Y5jv8oyhKEuIlS1LPCosRSoNpC4OxXaZRRfCUx9U=
+
+Name: assets/layers/splash_nav_missions.png
+SHA-256-Digest: Y53Z2r+K9guWTPeitmGgjbVdsD5j7SvMkosKXmE8RFY=
+
+Name: assets/layers/splash_nav_settings.png
+SHA-256-Digest: rmogjz4+nHnwsmML3EOkJz6xr79N0hlJfFZVKCds644=
+
+Name: assets/layers/splash_nav_shop.png
+SHA-256-Digest: /9qLCIVEFDQXVy1SF8lE0UWDJ3SOvUtMrYhT7STWxOE=
+
+Name: assets/layers/splash_nav_skins.png
+SHA-256-Digest: Ri+NQE1p+SNVjnF1xAqZf49OQb8KDUcxo7tBNpFWM+o=
+
+Name: assets/layers/splash_play.png
+SHA-256-Digest: qU9NgzV+DfiJV8mFcRSEQ1YuNpj6exymnY0xgwu0JJI=
+
+Name: assets/layers/splash_settings.png
+SHA-256-Digest: xrs1u+17WQLuDBR8EdK1ZXVZOnKFJIrY8Gq+Hv6A2i8=
+
+Name: assets/rooms/boy_back.png
+SHA-256-Digest: ie30zCddK/rc6qi5OBOU0D8deFcMVaZZOG0/VhNgQJI=
+
+Name: assets/rooms/boy_front.png
+SHA-256-Digest: jUuvF+B2Cl+tmx8FCbNyBLu6Q8wA8ONx9frsOnJDkGw=
+
+Name: assets/rooms/boy_tq.png
+SHA-256-Digest: ZK4ESKpnAeZICs6qBRiA7DoMslDZNkZAbnRvKv+DeLs=
+
+Name: assets/rooms/coin.png
+SHA-256-Digest: ks7dnYzwvCDFix2qmYMrnRIoefQn2+6vAlOjW0Rwdms=
+
+Name: assets/rooms/diamond.png
+SHA-256-Digest: 0wtgN/RfmJMca8t7Vb+A1H1ogKsBS4HDpXBLNbm7KdM=
+
+Name: assets/rooms/room1_bg_0.jpg
+SHA-256-Digest: MIi7NGyb+tTE1/CVryzTQ1US/Faa5HhUGiK4ay1WyAs=
+
+Name: assets/rooms/room1_bg_1.jpg
+SHA-256-Digest: N7JR0R2FiePUosmjVlZi5WjS15aJw+wzipZoCfWC+VY=
+
+Name: assets/rooms/room1_occ_diamond_case.png
+SHA-256-Digest: T5rz5N6mSEDD0p+cQAg7dhMbNtiZtH/6q75sFtf13YE=
+
+Name: assets/rooms/room1_occ_guard.png
+SHA-256-Digest: 8Owpz/2mIBq1MoJDsVi3/bKLBPFSsynnFVWpzVjW8Vc=
+
+Name: assets/rooms/room1_occ_lamp_case.png
+SHA-256-Digest: mDIdKsZeipNUGKs/hLhGozfzzkhpG7lVydDdCBJGv98=
+
+Name: assets/rooms/room1_occ_orange_box.png
+SHA-256-Digest: 4EBIMLOKXdxAUzcwHFI6j0A+vjEQdNvYXa1cxiClMZA=
+
+Name: assets/rooms/room1_occ_plant.png
+SHA-256-Digest: m8irR3QpJuvAQnSH7TMIj6ebPBdz+aWfhC/acdMtweo=
+
+Name: assets/rooms/room1_occ_purple_crate.png
+SHA-256-Digest: 21fL6po+ZBRbY9WPT6JjJc2jzipcggmNmC6zyeWO11E=
+
+Name: assets/rooms/room1_occ_statue_case.png
+SHA-256-Digest: qZhy4ZVPRDem1cp0WIXR8vLd8EQgbakenbfkWRAIxdo=
+
+Name: assets/rooms/room1_occ_teal_box.png
+SHA-256-Digest: fwTBQjMKc2JxCO5AujWYbJQmpdRM6rpPTkTpab/X5Co=
+
+Name: assets/rooms/room1_walk.png
+SHA-256-Digest: FMi/5bxUM6IPpoPm4IJeZfjo1ywmMgSbjLcGO6nKZHs=
+
+Name: assets/rooms/room2_bg_0.jpg
+SHA-256-Digest: TErw/29XGCDXhDTuAT2RCj9nAA0EiK84IhvwxdFKLt0=
+
+Name: assets/rooms/room2_bg_1.jpg
+SHA-256-Digest: EWtfX9WgdNcuOg3Mzd39RgJ+GQzvhgxKEv+6mMcaZFI=
+
+Name: assets/rooms/room2_occ_bench_b.png
+SHA-256-Digest: qCdC5hg8z3ce9RyansWTYI+xMNXLtAGt7N9ge5G4Pt0=
+
+Name: assets/rooms/room2_occ_bench_l.png
+SHA-256-Digest: 7gFzDOfR8obwf8AjoGYcviG93brXPT45mRNdllT6PQA=
+
+Name: assets/rooms/room2_occ_bench_ml.png
+SHA-256-Digest: paiayPPK4udVIZhJzAQQoZcqcl8g17404P19th4Oadk=
+
+Name: assets/rooms/room2_occ_bench_tl.png
+SHA-256-Digest: 5tKTVWUBbw1Rdkqw6If306HVb2JcRkYjVp5M5/4x2Ss=
+
+Name: assets/rooms/room2_occ_blocks_bl.png
+SHA-256-Digest: 6TwIxIFC2oDmUuOhngfOEGQKPgbjnQErlGopCCNF4mI=
+
+Name: assets/rooms/room2_occ_blocks_br.png
+SHA-256-Digest: 7wjUL7csKxTKl68bdas1UDE3T2zlCWubh/M+aPInh6s=
+
+Name: assets/rooms/room2_occ_cabinet.png
+SHA-256-Digest: 2xSV9oaShvSNVzpp2BTVFkUCG0rAD3IdTNtO5V6iJio=
+
+Name: assets/rooms/room2_occ_cabinet_r.png
+SHA-256-Digest: UzAoajslpiyK5MDrGhT2zl5YydUOKu6+CLak4ISReF0=
+
+Name: assets/rooms/room2_occ_case_blue.png
+SHA-256-Digest: Mh7wdIPeZ7PMrbNtaaAbYdziN48x+ohA/FzTQBGEu7c=
+
+Name: assets/rooms/room2_occ_case_gold.png
+SHA-256-Digest: dPEH4LdSvH34y86Z7BeZXAH3yQyPSnFUk3ZMdYwviAg=
+
+Name: assets/rooms/room2_occ_case_lr.png
+SHA-256-Digest: 4U5EgZUVTBk47cbL/Tdu7LkA6Zt7L2c1SIS4V5sMgks=
+
+Name: assets/rooms/room2_occ_case_ul.png
+SHA-256-Digest: k5XIiuAwlY96iPdd6/2ABzaXCbaehTbf6bTGCSyywOY=
+
+Name: assets/rooms/room2_occ_cluster.png
+SHA-256-Digest: 8tVo0aVsxvAC4odDDmOeHrOjmVh9eDYl4ZfBlvZStRM=
+
+Name: assets/rooms/room2_occ_coin_case.png
+SHA-256-Digest: iVfE+MDkIREdaMcPCLBNAXBqqR+EIg7B4jb4lbu6l0M=
+
+Name: assets/rooms/room2_occ_colonnade.png
+SHA-256-Digest: jMwCINl4lpjifXsL86ZNWZUWBfd3aQeYZi4PXfzF208=
+
+Name: assets/rooms/room2_occ_crate_b.png
+SHA-256-Digest: aD2X5FOE0/JDVkfEBJARxFmTO+sOzw/R51NvdYvuZgQ=
+
+Name: assets/rooms/room2_occ_crate_blue_l.png
+SHA-256-Digest: vRjKLu4GeoohGNuugz/hH0/V+flhmt8x/o3xW1zXrIU=
+
+Name: assets/rooms/room2_occ_crate_r.png
+SHA-256-Digest: c0qKfKEnuyGr1FB8Gwgz8yxZElfHKqYI2SNOi7NtsYQ=
+
+Name: assets/rooms/room2_occ_crates_m.png
+SHA-256-Digest: 5Xg7z5ENOb8bXrtOWuSBTPGxfNyjveZVq6aro5cBnqk=
+
+Name: assets/rooms/room2_occ_crown.png
+SHA-256-Digest: I5gWxJyyoFaaGapxj0dOFSwBGlm7RwT7euWoJOwppfE=
+
+Name: assets/rooms/room2_occ_guard1.png
+SHA-256-Digest: I5150TEtIyeoxv8JejqmLixlCO2lgnA54BvNVr21LPw=
+
+Name: assets/rooms/room2_occ_guard2.png
+SHA-256-Digest: PVbxU6TkA8mISDJgtkpefzLKRDZVju6Tgg75/FdEk9g=
+
+Name: assets/rooms/room2_occ_knight.png
+SHA-256-Digest: HdZoheAvwL3GjMwnui3KvGH6Eymnk/sMmzx9o6JYwSE=
+
+Name: assets/rooms/room2_occ_lamp_r.png
+SHA-256-Digest: LWp7PsKz7yA1ZJ2tv9v3Er1vCgBjFUkNLs+j5+gzJ7E=
+
+Name: assets/rooms/room2_occ_ledge_l.png
+SHA-256-Digest: LO5NnG2SqVlSiBjHqnBvaLEnZ57P3M9CwbYrnngmScI=
+
+Name: assets/rooms/room2_occ_low_wall.png
+SHA-256-Digest: iSvB7WjELo2kPWWPBcKbVzglvdZhYW0eVyhjORkFWSE=
+
+Name: assets/rooms/room2_occ_olive_crate.png
+SHA-256-Digest: eohSOWZbX7rpQEtUjajQUJslscAelegx9kwJ0yZS+8c=
+
+Name: assets/rooms/room2_occ_pillar_cannon.png
+SHA-256-Digest: 5/5QFARQN01lPRfQBUte3A4RR3JExEa8/yfHqRIcELE=
+
+Name: assets/rooms/room2_occ_pillar_l.png
+SHA-256-Digest: iWVFWCC/CLXi0xSXknkp8bAVouzHQnsCqB4XVvuBklI=
+
+Name: assets/rooms/room2_occ_pillar_lamp_l.png
+SHA-256-Digest: im5sMbubstFk9sldVnO6q0KafAPJPJiTfd08XENq01A=
+
+Name: assets/rooms/room2_occ_pillar_m.png
+SHA-256-Digest: wSkRD2SXcu/wFQUb+HKjT+xLDC5h6Tdf+kaN0QbPN6Y=
+
+Name: assets/rooms/room2_occ_pillar_r.png
+SHA-256-Digest: 10E60zpY7R+7o4dqWXT+GQ2MejkNc7HSag25q4GL9bk=
+
+Name: assets/rooms/room2_occ_plant_b.png
+SHA-256-Digest: 3n8GSBjPwldVKn3MU88JQzRMpgYmqCDrQkujzhnGtDI=
+
+Name: assets/rooms/room2_occ_plant_br.png
+SHA-256-Digest: E0C/KaNG8T9XukNTp0ZfgXiHc7XR26YZhhiGyO40o4A=
+
+Name: assets/rooms/room2_occ_plant_crown.png
+SHA-256-Digest: O5ENs0ItOVbtShlh8K1/cIagm3kWvTPEpdSoLgKld8Q=
+
+Name: assets/rooms/room2_occ_plant_exl.png
+SHA-256-Digest: OmSNlWGPpdWx82deR+nXfnek6MhDj2LVyPQnNeEisfc=
+
+Name: assets/rooms/room2_occ_plant_l1.png
+SHA-256-Digest: y5ZdtXvGcMx27lj20j9FH3Fho92enMj9JYA9RxKlN6Y=
+
+Name: assets/rooms/room2_occ_plant_l2.png
+SHA-256-Digest: xWbNtH52cG4tbG4gavP3fzWxYvEMRfftmr0F01fwKwY=
+
+Name: assets/rooms/room2_occ_plant_r.png
+SHA-256-Digest: 3HCSDibAzUTWbtKD7nlR3zEWonk3+Wnw/rPjMT21Gh4=
+
+Name: assets/rooms/room2_occ_plant_r2.png
+SHA-256-Digest: 8fNFgv5+3gQ037TH0z/nbla2OXtB8mFSO7wJgqIHDJI=
+
+Name: assets/rooms/room2_occ_plant_tl.png
+SHA-256-Digest: OU0jWISxsWS7rrGlw7ykKKOgr9PXqHCZB9hSB2DPm6U=
+
+Name: assets/rooms/room2_occ_plant_tm.png
+SHA-256-Digest: gYBBmaxrfe6I3amNMyTZIXGbo6r8yZSilwirpvNGWm4=
+
+Name: assets/rooms/room2_occ_plant_tr1.png
+SHA-256-Digest: ZvkKEj8kinRIiLoGEnrfVMLQOnJ27BN0NR6SWLd+Vik=
+
+Name: assets/rooms/room2_occ_plant_tr2.png
+SHA-256-Digest: fCp3GnfRTYwjpdMG47ekmV9NUFmQDhooZ+ZIaCV10to=
+
+Name: assets/rooms/room2_occ_plaque.png
+SHA-256-Digest: I7wum8uF7MQikoxKEN2AKUW5ikql82SUSmAX1tRPHaU=
+
+Name: assets/rooms/room2_occ_plinth.png
+SHA-256-Digest: ceqYfEtcLUh/HRIawSs9H8qdJRKIQBO+ApTaVlLkEo0=
+
+Name: assets/rooms/room2_occ_ropes_l.png
+SHA-256-Digest: arOmIOYxUz63Pj47i5H1hAfu8FDR/U1DQcrCeDw7CPU=
+
+Name: assets/rooms/room2_occ_ropes_r.png
+SHA-256-Digest: SdWcscwYF5Y+irrrDfUVK84od1lEsHn+O6az02lGleA=
+
+Name: assets/rooms/room2_occ_statue_l.png
+SHA-256-Digest: 2cAumZle+s750+A7K5gBsPmJKwqGdjpNNyhkFtxnEjA=
+
+Name: assets/rooms/room2_occ_statue_r.png
+SHA-256-Digest: iuqJ6pHRWKkS+a4apy6ZG5VT6tsWzdc7vi/J5AVTMak=
+
+Name: assets/rooms/room2_occ_trex_a.png
+SHA-256-Digest: q5x8dtV/nrKJlOLMAQq4G1QRSsgzBpSdycRy8AboLRQ=
+
+Name: assets/rooms/room2_occ_trex_b.png
+SHA-256-Digest: fVjbyx/6+Yfn/I3AeGV1WUdQHrgi8/jieb1+IWllAlg=
+
+Name: assets/rooms/room2_occ_trex_c.png
+SHA-256-Digest: 8RrAgN/yjlQ+onAih/hdn7J7+wduvlxivpyoVqIXgiM=
+
+Name: assets/rooms/room2_occ_wall_diag_0.png
+SHA-256-Digest: eJEfYlx7cJSzSjJrKUso98jyJv6PGqJpKzKl3RNNBgc=
+
+Name: assets/rooms/room2_occ_wall_diag_1.png
+SHA-256-Digest: g6d/QPAHox5+/6z1cjEg6ZzIZ2sV9VZYcKuOgfc2moU=
+
+Name: assets/rooms/room2_occ_wall_diag_2.png
+SHA-256-Digest: ZQU0jDfsT8nuwY2wgnYH2t6gxLBy8WYHFYd08a2729Q=
+
+Name: assets/rooms/room2_occ_wall_diag_3.png
+SHA-256-Digest: zfqgsBWtVPiIZ17pPWFErTzKoperE/cqE8z4PkEsiBs=
+
+Name: assets/rooms/room2_occ_wall_diag_4.png
+SHA-256-Digest: 9Lt8WFUC6eefZYmiL7nlQpROdXTRazPIX9wW149Xcus=
+
+Name: assets/rooms/room2_occ_wall_diag_5.png
+SHA-256-Digest: MFPM2+FfzNZgs7HQcD+vhvUvPxtQLEDqmj8dG22Iy4U=
+
+Name: assets/rooms/room2_occ_wall_diag_6.png
+SHA-256-Digest: qqKQ2yTEZPw3ebNg8+WVmZ0KbViCOjnrGjJesMRcbM4=
+
+Name: assets/rooms/room2_occ_wall_edge_l.png
+SHA-256-Digest: zcz1xuPUB0xmwhOKBd7E3tJU9VCqoOx+oyM/Ut6ruww=
+
+Name: assets/rooms/room2_occ_wall_h_r.png
+SHA-256-Digest: XN86z+6P4v1O4b9dCHv7Smk7ZP9nLPaG1YVvXZ0ZbKQ=
+
+Name: assets/rooms/room2_occ_wall_m.png
+SHA-256-Digest: pwmIdETo/47CbS1oqAGO1jXKBBoiEU3iRESELFruXuQ=
+
+Name: assets/rooms/room2_occ_wall_r2.png
+SHA-256-Digest: nuXm32UL6G15p2Ds/kDVP6CWyc4AHpHcIvtEXU0LFEc=
+
+Name: assets/rooms/room2_occ_wall_v_l_0.png
+SHA-256-Digest: IKp4MQmt/zLLYE08ouk+8PCyV4G2Yn7k9XW6a/01cE8=
+
+Name: assets/rooms/room2_occ_wall_v_l_1.png
+SHA-256-Digest: 9o/KJJvAxa9yQYQBTMuymOn6oRB1F+aUEpPrjsBX1+U=
+
+Name: assets/rooms/room2_occ_wall_v_l_10.png
+SHA-256-Digest: maEpv0AaI4x4aJr4JsbxlbYsCBK8g9/IfOKnTDQ6Vcc=
+
+Name: assets/rooms/room2_occ_wall_v_l_11.png
+SHA-256-Digest: vfUh95sw2KzWGaQP4uDOfAC9+FoVfM38aj51NnuBLYs=
+
+Name: assets/rooms/room2_occ_wall_v_l_2.png
+SHA-256-Digest: kRG2A2l6fBZvz/EeXRiYbrqltI9E0421V11MMUbJx9s=
+
+Name: assets/rooms/room2_occ_wall_v_l_3.png
+SHA-256-Digest: OMxyncp3cdsYaqw89XSv/kQ7bfF1G+2tS2yEzYFqv74=
+
+Name: assets/rooms/room2_occ_wall_v_l_4.png
+SHA-256-Digest: XK/dJ6bWLZ1u4P8lX3JqWrG0fesPXsrX71vJjqQ7IoY=
+
+Name: assets/rooms/room2_occ_wall_v_l_5.png
+SHA-256-Digest: 31DDJEL0iZVShoX8dgHLxc4uK9aK1gLI0d/JVDakV94=
+
+Name: assets/rooms/room2_occ_wall_v_l_6.png
+SHA-256-Digest: sRofqq3favZWvKCt0pFiFZGrg1GFD/LsZFyhw9OUlpk=
+
+Name: assets/rooms/room2_occ_wall_v_l_7.png
+SHA-256-Digest: l2fsOnEuMwsI1cBoKdzGkJiqBXncXxegCL2u76oG7zc=
+
+Name: assets/rooms/room2_occ_wall_v_l_8.png
+SHA-256-Digest: g8MvwTxY2dfRaZE1SIuK/x2fN0Kq6Z98HMxu9WguEps=
+
+Name: assets/rooms/room2_occ_wall_v_l_9.png
+SHA-256-Digest: D9Rtq+gwzvKwQ1gorEwj7i7FennU7Gvq/N9CWK5rEsc=
+
+Name: assets/rooms/room2_occ_wall_v_r_0.png
+SHA-256-Digest: CSAgK8v8uQPM7OTP4Glqb4x+kyt+xeBLeRJBRDVis1Y=
+
+Name: assets/rooms/room2_occ_wall_v_r_1.png
+SHA-256-Digest: MNO1XyDPpRU9lRcPmkpvMpeHL1GcbqzAGgTNSAE7FTM=
+
+Name: assets/rooms/room2_occ_wall_v_r_2.png
+SHA-256-Digest: UgIlW9OUnwCf7jEQkKs6YSPZQ3qekz0YJywoAqrGEdE=
+
+Name: assets/rooms/room2_occ_wall_v_r_3.png
+SHA-256-Digest: OoMjjD/S9QtdyJeOcF5jTCEPVdHnWrTcAB99x1I04dA=
+
+Name: assets/rooms/room2_occ_wall_v_r_4.png
+SHA-256-Digest: 8dQhBrSSfGY+480qLR87xDF90nhRZAYsNZdGHiFQZGE=
+
+Name: assets/rooms/room2_occ_wall_v_r_5.png
+SHA-256-Digest: N20JQ5LWcNIJ7vc7sohbeNsTSlc+iPHK5hT/ZDB0/+I=
+
+Name: assets/rooms/room2_walk.png
+SHA-256-Digest: Xw6ODiCmD/zZDlJQ2CL68zVcgSs10GhM0nDM6BxtX64=
+
+Name: classes.dex
+SHA-256-Digest: 2Db3Wupvi9E023kdB17jkw2u81ezFd+4XhXRTu4SIDE=
+
+Name: res/mipmap-anydpi-v26/ic_launcher.xml
+SHA-256-Digest: x2BRRwTc95VRtWrFoVAp85iRqqrf7RKORZjMEx7tTpk=
+
+Name: res/mipmap-hdpi/ic_launcher.png
+SHA-256-Digest: xYkPwlvt4bTaOG0S16xhtHqyHtFaCVn/5JhABOSN8W8=
+
+Name: res/mipmap-hdpi/ic_launcher_fg.png
+SHA-256-Digest: P6cVX+Dk5WN7dj4Bao6I9TGtZ9DPQqiIs3R5O/P3320=
+
+Name: res/mipmap-mdpi/ic_launcher.png
+SHA-256-Digest: hwSO6v3lWzXMmAqGZgPdaCyEvox00Qr/qRMyMtSr5vI=
+
+Name: res/mipmap-mdpi/ic_launcher_fg.png
+SHA-256-Digest: 0AiubbfheTKSLpEJZtZrQZLkV615+OEh56Hs8QlFkAE=
+
+Name: res/mipmap-xhdpi/ic_launcher.png
+SHA-256-Digest: V5Kkv9MFm9V2G4stoIE4HXzbQQDx+c0mlj+zjl7ew2k=
+
+Name: res/mipmap-xhdpi/ic_launcher_fg.png
+SHA-256-Digest: Y8YLoZDPztekOUsOJOH/nm00Dtja23VwQ4s+f2cgVvI=
+
+Name: res/mipmap-xxhdpi/ic_launcher.png
+SHA-256-Digest: bOaOrPLpScebUlt6xl+w0cWj24EtLslcSjFQcJeZt2A=
+
+Name: res/mipmap-xxhdpi/ic_launcher_fg.png
+SHA-256-Digest: dUMp3Nw5AzgZAOtMBiIWCTmmk1Hi545Tsx9aFcrUvgA=
+
+Name: res/mipmap-xxxhdpi/ic_launcher.png
+SHA-256-Digest: JVUnxSdaOH7/Y2V/k/AawU8yy+EZOKXPYf/XMEcWbg4=
+
+Name: res/mipmap-xxxhdpi/ic_launcher_fg.png
+SHA-256-Digest: Sao3SYtRIU4YwLwX7yG1SiyM3Mxxaz97gFBlqFdEi00=
+
+Name: resources.arsc
+SHA-256-Digest: EV344Tfre6qEKvvXhgjPO/IMmL6rCYl21q/AFgr6pnE=
+
