@@ -82,6 +82,9 @@ final class Game {
     int sprintId = -1;
     boolean sprint;
     final float[] walkPath = new float[512];
+    final float[] steerPath = new float[512];
+    int steerN, steerI;
+    float steerReplan, steerGoalX, steerGoalY;
     int walkN, walkI;
     boolean walking;         // following walkPath (tap-to-walk)
     float tapMarkX, tapMarkY, tapMarkT = -1;
@@ -165,6 +168,7 @@ final class Game {
     private void applyRoom(int i) {
         if (roomIndex >= 0 && roomIndex != i) host.forget("rooms/room" + (roomIndex + 1) + "_");
         roomIndex = i;
+        nextRoom = -2;   // nothing preloaded for this room yet (a replay may have dropped it)
         room = RoomData.ROOMS[i];
         Bitmap walk = host.bitmap(room.walk);
         nav = new Nav(room, walk);
@@ -219,6 +223,7 @@ final class Game {
         bannerTop = room.label;
         bannerMain = room.title;
         bannerT = 0;
+        preloadNext();
     }
 
     void resume() {
@@ -462,6 +467,24 @@ final class Game {
                     float dist = f[2];
                     float k = Math.min(1, dist / (room.boyH * 0.3f));
                     if (dist > room.boyH * 0.06f) {
+                        float gx = wx, gy = wy;
+                        // straight line blocked: follow an A* route towards the finger instead
+                        if (!nav.clearLine(boy.x, boy.y, wx, wy, room.feetR * 0.9f)) {
+                            steerReplan -= dt;
+                            if (steerReplan <= 0 || Math.hypot(wx - steerGoalX, wy - steerGoalY) > 60) {
+                                steerReplan = 0.3f;
+                                steerGoalX = wx;
+                                steerGoalY = wy;
+                                float[] p = new float[2];
+                                float tx = wx, ty = wy;
+                                if (!nav.canStand(tx, ty, room.feetR) && nav.nearestStandable(tx, ty, room.feetR, p)) { tx = p[0]; ty = p[1]; }
+                                steerN = nav.path(boy.x, boy.y, tx, ty, room.feetR, steerPath, steerPath.length / 2);
+                                steerI = 0;
+                            }
+                            while (steerI < steerN - 1 && floorDir(boy.x, boy.y, steerPath[steerI * 2], steerPath[steerI * 2 + 1])[2] < room.boyH * 0.1f) steerI++;
+                            if (steerI < steerN) { gx = steerPath[steerI * 2]; gy = steerPath[steerI * 2 + 1]; }
+                        } else steerN = 0;
+                        f = floorDir(boy.x, boy.y, gx, gy);
                         moveFx = f[0] * k;
                         moveFy = f[1] * k;
                     }
@@ -577,7 +600,8 @@ final class Game {
     private void moveBoy(float dt, float fx, float fy, boolean auto) {
         float d = Math.max(0.12f, room.depth(boy.y));
         float vf = room.vFactor * (float) Math.pow(d, room.vPow);
-        float spd = room.speed * (sprint && phase == PLAY ? 1.65f : 1f);
+        // scripted walks: the far end of a steep room is slow in world px, so hurry the doorway walk along
+        float spd = room.speed * (sprint && phase == PLAY ? 1.65f : phase == EXIT ? 2.4f : 1f);
         float tvx = fx * spd * d, tvy = fy * spd * vf;
         float k = Math.min(1, (Math.hypot(fx, fy) > 0.01 ? 12 : 9) * dt);
         boy.vx += (tvx - boy.vx) * k;
@@ -585,13 +609,38 @@ final class Game {
         float ox = boy.x, oy = boy.y;
         float nx = boy.x + boy.vx * dt, ny = boy.y + boy.vy * dt;
         if (auto || nav.canStand(nx, ny, room.feetR)) { boy.x = nx; boy.y = ny; }
-        else if (nav.canStand(nx, boy.y, room.feetR)) { boy.x = nx; boy.vy *= 0.5f; }
-        else if (nav.canStand(boy.x, ny, room.feetR)) { boy.y = ny; boy.vx *= 0.5f; }
-        else { boy.vx *= 0.3f; boy.vy *= 0.3f; if (walking) walking = false; }
+        else if (!flowAround(dt, fx, fy, spd, d, vf)) {
+            if (nav.canStand(nx, boy.y, room.feetR)) { boy.x = nx; boy.vy *= 0.5f; }
+            else if (nav.canStand(boy.x, ny, room.feetR)) { boy.y = ny; boy.vx *= 0.5f; }
+            else { boy.vx *= 0.3f; boy.vy *= 0.3f; if (walking) walking = false; }
+        }
         float mdx = (boy.x - ox) / d, mdy = (boy.y - oy) / vf;
         float moved = (float) Math.hypot(mdx, mdy);
         boolean driven = Math.hypot(fx, fy) > 0.01;
         boy.animate(dt, moved, driven ? fx : mdx, driven ? fy : mdy, room.boyH, driven, sprint && phase == PLAY);
+    }
+
+    /** blocked head-on: slide around the obstacle by trying the wanted direction turned +-35 / +-70 degrees */
+    private boolean flowAround(float dt, float fx, float fy, float spd, float d, float vf) {
+        float len = (float) Math.hypot(fx, fy);
+        if (len < 0.05f) return false;
+        float step = spd * len * dt;
+        for (int k = 1; k <= 4; k++) {
+            float a = (float) Math.toRadians(k <= 2 ? 35 : 70) * (k % 2 == 1 ? 1 : -1);
+            // prefer the side we were already drifting towards
+            if (k % 2 == 1 && (boy.vx * fy - boy.vy * fx) > 0) a = -a;
+            float c = (float) Math.cos(a), s = (float) Math.sin(a);
+            float rx = (fx * c - fy * s) / len, ry = (fx * s + fy * c) / len;
+            float nx = boy.x + rx * step * d * (k <= 2 ? 0.8f : 0.55f), ny = boy.y + ry * step * vf * (k <= 2 ? 0.8f : 0.55f);
+            if (nav.canStand(nx, ny, room.feetR)) {
+                boy.vx = (nx - boy.x) / dt;
+                boy.vy = (ny - boy.y) / dt;
+                boy.x = nx;
+                boy.y = ny;
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean near(float[] p, float r) {
@@ -645,22 +694,30 @@ final class Game {
         phase = EXIT;
         phaseT = 0;
         clearControls();
-        if (roomIndex + 1 < RoomData.ROOMS.length) {
-            nextRoom = roomIndex + 1;
-            nextLoaded = false;
-            final Room r = RoomData.ROOMS[nextRoom];
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    loadAssets(r);
-                    nextLoaded = true;
-                }
-            }, "room-loader").start();
-        } else {
+        if (roomIndex + 1 < RoomData.ROOMS.length) preloadNext();
+        else {
             nextRoom = -1;
             nextLoaded = true;
         }
         host.haptic(1);
+    }
+
+    /** decode the next room in the background (started as soon as a room begins, so the doorway never waits) */
+    private void preloadNext() {
+        int n = roomIndex + 1;
+        if (n >= RoomData.ROOMS.length || nextRoom == n) return;
+        nextRoom = n;
+        nextLoaded = false;
+        final Room r = RoomData.ROOMS[n];
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadAssets(r);
+                nextLoaded = true;
+            }
+        }, "room-loader");
+        t.setPriority(Thread.MIN_PRIORITY);
+        t.start();
     }
 
     // ---- camera ----

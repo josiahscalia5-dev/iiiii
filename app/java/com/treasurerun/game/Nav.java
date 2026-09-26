@@ -182,8 +182,8 @@ final class Nav {
                 if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
                 int ni = nx + ny * w;
                 if (walk[ni] == 0) continue;
-                // need clearance proportional to the agent's size at that depth (relaxed near start/goal)
-                float need = 1.4f * feetR * Math.max(0.15f, room.depth(ny * div)) / div * 0.7f;
+                // clearance (chamfer units: 2 per cell) for the agent's feet radius at that depth, relaxed near start/goal
+                float need = 2 * 0.9f * feetR * Math.max(0.15f, room.depth(ny * div)) / div;
                 boolean nearEnds = Math.abs(nx - tx) + Math.abs(ny - ty) < 6 || Math.abs(nx - sx) + Math.abs(ny - sy) < 6;
                 if (!nearEnds && clear[ni] < need) continue;
                 if (k >= 4 && (walk[cx + DX[k] + cy * w] == 0 || walk[cx + (cy + DY[k]) * w] == 0)) continue;

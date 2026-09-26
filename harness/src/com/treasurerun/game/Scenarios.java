@@ -79,6 +79,75 @@ final class Scenarios {
                 s.up(0, bx, by - 800);
                 break;
             }
+            case "caught": {
+                g.startRun();
+                s.run(2.2f);
+                // walk to the middle of the guard's patrol line and stand in his way
+                s.tapWorld(560, 1760);
+                s.run(1.6f);
+                s.shot("wait");
+                for (int i = 0; i < 60 && g.phase != Game.CAUGHT; i++) {
+                    s.run(0.15f);
+                    if (i % 2 == 0) s.shot(String.format("c%02d", i));
+                }
+                s.film("caught", 2.4f, 0.2f);
+                break;
+            }
+            case "walkviews": {
+                // film the boy walking in 6 directions in Room 2 (open floor near the start), cropped around him
+                g.startRun();
+                g.phase = Game.EXIT; g.phaseT = 2; g.nextRoom = 1; g.nextLoaded = true;
+                s.step();
+                g.guards.clear();
+                s.run(2.5f);
+                g.guards.clear();
+                float[][] dirs = {{0, -1}, {0.55f, -0.85f}, {1, 0}, {0.7f, 0.7f}, {0, 1}, {-1, 0}};
+                StringBuilder sb = new StringBuilder();
+                for (int d = 0; d < dirs.length; d++) {
+                    g.boy.place(764, 2670, 0);
+                    g.camReady = false;
+                    s.run(0.1f);
+                    float bx = g.screenX(g.boy.x), by = g.screenY(g.boy.y);
+                    s.down(0, bx + dirs[d][0] * 500, by + dirs[d][1] * 500);
+                    s.run(0.5f);
+                    for (int f = 0; f < 10; f++) {
+                        s.run(1 / 15f);
+                        s.crop(String.format("v%d_%02d", d, f), g.boy.x, g.boy.y, 1.25f);
+                        if (f % 3 == 0) System.out.println(String.format("dir %d f%d boy=%.0f,%.0f heading=%.0f view=%d mirror=%b move=%.2f walking=%b steerN=%d", d, f, g.boy.x, g.boy.y, Math.toDegrees(g.boy.heading), g.boy.view, g.boy.mirror, g.boy.moveAmt, g.walking, g.steerN));
+                        s.move(0, g.screenX(g.boy.x) + dirs[d][0] * 500, g.screenY(g.boy.y) + dirs[d][1] * 500);
+                    }
+                    s.up(0, bx, by);
+                    s.run(0.6f);
+                    s.crop(String.format("v%d_stop", d), g.boy.x, g.boy.y, 1.25f);
+                }
+                break;
+            }
+            case "full": {
+                // whole run by taps only, guards removed: proves A* reaches every objective and the flow completes
+                g.startRun();
+                s.run(2.2f);
+                g.guards.clear();
+                s.tapWorld(g.room.heist.gemX, g.room.heist.gemY);
+                System.out.println("steal: " + s.waitFor(() -> g.heistDone, 15));
+                s.run(1f);
+                s.shot("r1_stolen");
+                // tap the doorway (tap again if the path stops short)
+                for (int k = 0; k < 4 && g.phase == Game.PLAY; k++) { s.tapWorld(g.room.doorX, g.room.exitY - 10); s.waitFor(() -> g.phase != Game.PLAY || !g.walking, 12); }
+                System.out.println("exit1: phase=" + g.phase + " boy=" + g.boy.x + "," + g.boy.y);
+                boolean in2 = s.waitFor(() -> g.roomIndex == 1 && g.phase == Game.PLAY, 8);
+                System.out.println("in room 2: " + in2 + " " + g.debugState());
+                g.guards.clear();
+                s.shot("r2_start");
+                for (int k = 0; k < 6 && g.phase == Game.PLAY; k++) {
+                    s.tapWorld(g.room.doorX, g.room.exitY - 10);
+                    s.waitFor(() -> g.phase != Game.PLAY || !g.walking, 20);
+                    s.shot("r2_leg" + k);
+                    System.out.println("r2 leg " + k + " boy=" + g.boy.x + "," + g.boy.y + " walkN=" + g.walkN);
+                }
+                s.waitFor(() -> g.phase == Game.DONE, 5);
+                System.out.println("final phase=" + g.phase + " events=" + s.host.events + " coins=" + g.coins + " gems=" + g.gems);
+                break;
+            }
             default:
                 throw new IllegalArgumentException("unknown scenario " + name);
         }

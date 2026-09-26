@@ -28,7 +28,11 @@ public class Sim {
         g.setSize(w, h);
     }
 
-    void step() { g.update(1 / 60f); }
+    void step() {
+        // background room loading runs in real time: don't let simulated time race past it at a doorway
+        while (g.phase == Game.EXIT && !g.nextLoaded) { try { Thread.sleep(5); } catch (InterruptedException e) { } }
+        g.update(1 / 60f);
+    }
 
     void run(float sec) { for (int i = 0; i < Math.round(sec * 60); i++) step(); }
 
@@ -54,6 +58,23 @@ public class Sim {
         String st = name + ": " + g.debugState() + " guards=" + guardsState();
         log.add(st);
         System.out.println(st);
+    }
+
+    /** frame cropped around a world point (feet), sized relative to the boy's height */
+    void crop(String name, float wx, float wy, float k) {
+        Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        c.drawColor(Color.BLACK);
+        g.render(c);
+        float bh = g.boy.height(g.room) * g.camScale;
+        int cw = Math.round(bh * k * 0.8f), ch = Math.round(bh * k);
+        int x0 = Math.max(0, Math.min(w - cw, Math.round(g.screenX(wx) - cw / 2f)));
+        int y0 = Math.max(0, Math.min(h - ch, Math.round(g.screenY(wy) - ch * 0.88f)));
+        try {
+            javax.imageio.ImageIO.write(b.img.getSubimage(x0, y0, cw, ch), "png", new File(out, name + ".png"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     String guardsState() {

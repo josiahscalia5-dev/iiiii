@@ -47,7 +47,7 @@ final class Boy {
         r.thigh = 130; r.shin = 124; r.footLen = 128;
         r.thighR = 56; r.kneeR = 43; r.ankleR = 33;
         r.stride = 170; r.lift = 95;
-        r.armX = 248; r.armY = 282; r.pivotX = 272; r.pivotY = 318; r.handX = 338; r.handY = 452;
+        r.armX = 248; r.armY = 299; r.pivotX = 272; r.pivotY = 320; r.handX = 338; r.handY = 452;
         r.armAmp = 0.55f;
         RIGS[BACK] = r;
 
@@ -59,7 +59,7 @@ final class Boy {
         r.thigh = 138; r.shin = 132; r.footLen = 140;
         r.thighR = 60; r.kneeR = 46; r.ankleR = 36;
         r.stride = 180; r.lift = 85;
-        r.armX = 352; r.armY = 360; r.pivotX = 385; r.pivotY = 405; r.handX = 482; r.handY = 540;
+        r.armX = 354; r.armY = 377; r.pivotX = 380; r.pivotY = 405; r.handX = 482; r.handY = 540;
         r.armAmp = 0.6f;
         RIGS[TQ] = r;
 

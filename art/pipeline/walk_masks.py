@@ -4,7 +4,7 @@ import os, io, zipfile; ROOT=os.path.abspath(os.path.join(os.path.dirname(os.pat
 import numpy as np
 from PIL import Image
 apk=zipfile.ZipFile(ROOT+'/reference/TreasureRun-v0_4-rooms.apk')
-OPEN={1:[(704,1164,824,1216)], 2:[(584,1240,716,1296),(1492,1828,1664,1872)]}   # world px x0,y0,x1,y1
+OPEN={1:[(704,1164,824,1216)], 2:[(572,1240,720,1296),(1492,1828,1664,1872)]}   # world px x0,y0,x1,y1
 for room,rects in OPEN.items():
     im=Image.open(io.BytesIO(apk.read('assets/rooms/room%d_walk.png'%room))); mode=im.mode
     a=np.array(im.convert('RGB'))
