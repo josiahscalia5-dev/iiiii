@@ -9,7 +9,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import com.treasurerun.game.GameView;
 import com.treasurerun.game.ScreenView;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /* loaded from: classes.dex */
-public final class MainActivity extends Activity implements ScreenView.Listener, ScreenView.ArtSource, GameView.Host {
+public final class MainActivity extends Activity implements ScreenView.Listener, ScreenView.ArtSource, Host {
     private final Map<String, Bitmap> bitmaps = new HashMap();
     private GameView game;
     private boolean inGame;
@@ -60,16 +59,17 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
                         MainActivity.this.loadScreen(i2);
                     }
                 }
-                MainActivity.this.bitmap("hud/joy_base.png");
-                MainActivity.this.bitmap("hud/joy_knob.png");
                 MainActivity.this.bitmap("hud/btn_hand.png");
                 MainActivity.this.bitmap("hud/btn_run.png");
                 MainActivity.this.bitmap("hud/btn_pause.png");
                 MainActivity.this.bitmap("hud/icon_coin.png");
                 MainActivity.this.bitmap("hud/panel.png");
-                for (Pose pose : RoomData.POSES) {
-                    MainActivity.this.bitmap(pose.sprite);
+                for (Boy.Rig r : Boy.RIGS) {
+                    MainActivity.this.bitmap(r.body);
+                    if (r.arm != null) MainActivity.this.bitmap(r.arm);
                 }
+                MainActivity.this.bitmap(Guard.SIDE);
+                MainActivity.this.bitmap(Guard.FRONT);
                 MainActivity.this.bitmap("rooms/coin.png");
                 MainActivity.this.bitmap("rooms/diamond.png");
             }
@@ -84,7 +84,7 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
         }
     }
 
-    @Override // com.treasurerun.game.ScreenView.ArtSource, com.treasurerun.game.GameView.Host
+    @Override // com.treasurerun.game.ScreenView.ArtSource, com.treasurerun.game.Host
     public Bitmap bitmap(String str) {
         Bitmap bitmap;
         synchronized (this.bitmaps) {
@@ -104,7 +104,17 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
         return bitmap;
     }
 
-    @Override // com.treasurerun.game.GameView.Host
+    @Override // com.treasurerun.game.Host
+    public void haptic(int kind) {
+        if (this.game != null) this.game.haptic(kind);
+    }
+
+    @Override // com.treasurerun.game.Host
+    public void log(String msg) {
+        android.util.Log.i("TreasureRun", msg);
+    }
+
+    @Override // com.treasurerun.game.Host
     public void forget(String str) {
         synchronized (this.bitmaps) {
             ArrayList arrayList = new ArrayList();
@@ -161,12 +171,12 @@ public final class MainActivity extends Activity implements ScreenView.Listener,
         this.game.startRun();
     }
 
-    @Override // com.treasurerun.game.GameView.Host
+    @Override // com.treasurerun.game.Host
     public void onGamePause() {
         go(0);
     }
 
-    @Override // com.treasurerun.game.GameView.Host
+    @Override // com.treasurerun.game.Host
     public void onGameFinished(int i, int i2) {
         runOnUiThread(new Runnable() { // from class: com.treasurerun.game.MainActivity.2
             @Override // java.lang.Runnable
